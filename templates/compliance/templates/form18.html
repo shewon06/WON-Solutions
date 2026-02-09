@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <style>
+        @page {
+            size: A4;
+            margin: 2cm;
+        }
+
+        body {
+            font-family: sans-serif;
+            font-size: 12pt;
+            line-height: 1.6;
+        }
+
+        .header {
+            text-align: center;
+            border-bottom: 2px solid black;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+        }
+
+        .form-title {
+            font-size: 18pt;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .company-info {
+            margin-bottom: 30px;
+        }
+
+        .section {
+            margin-bottom: 20px;
+        }
+
+        .footer {
+            margin-top: 100px;
+            font-size: 10pt;
+            color: #666;
+            border-top: 1px solid #ccc;
+            padding-top: 10px;
+        }
+
+        .signature-line {
+            border-top: 1px solid black;
+            width: 250px;
+            margin-top: 50px;
+            margin-bottom: 5px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="header">
+        <div class="form-title">FORM 18</div>
+        <div>Consent and Certificate of Director / Secretary</div>
+        <div style="font-size: 10pt;">Companies Act No. 7 of 2007</div>
+    </div>
+
+    <div class="company-info">
+        <strong>Company Name:</strong> {{ company.company_name }}<br>
+        <strong>ROC Number:</strong> {{ company.roc_number }}
+    </div>
+
+    <div class="section">
+        <p>I, <strong>{{ director.name }}</strong> of <strong>{{ director.address }}</strong>, holding NIC/Passport No
+            <strong>{{ director.nic_or_passport }}</strong>, hereby consent to be a Director of the above company.</p>
+    </div>
+
+    <div class="section">
+        <p>I certify that I am not disqualified from being appointed or holding office as a Director of a company.</p>
+    </div>
+
+    <div class="section" style="margin-top: 50px;">
+        <div class="signature-line"></div>
+        <div>Signature of Director</div>
+        <div>Date: ____________________</div>
+    </div>
+
+    <div class="footer">
+        <p>{{ system_gen_msg }}</p>
+        <p>This form must be signed manually and filed with the Registrar of Companies within 20 working days.</p>
+    </div>
+</body>
+
+</html>

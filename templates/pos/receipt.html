@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Receipt #WS-{{ sale.id }}</title>
+    <style>
+        body {
+            font-family: 'Courier New', Courier, monospace;
+            width: 80mm;
+            margin: 0;
+            padding: 5mm;
+            font-size: 12px;
+            color: #000;
+        }
+
+        .text-center {
+            text-align: center;
+        }
+
+        .text-right {
+            text-align: right;
+        }
+
+        .font-bold {
+            font-weight: bold;
+        }
+
+        .header {
+            margin-bottom: 5mm;
+        }
+
+        .header h1 {
+            margin: 0;
+            font-size: 18px;
+        }
+
+        .divider {
+            border-top: 1px dashed #000;
+            margin: 3mm 0;
+        }
+
+        .item-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 1mm;
+        }
+
+        .totals {
+            margin-top: 3mm;
+        }
+
+        .totals-row {
+            display: flex;
+            justify-content: space-between;
+            font-weight: bold;
+        }
+
+        .footer {
+            margin-top: 8mm;
+            font-size: 10px;
+        }
+
+        @media print {
+            body {
+                padding: 0;
+                width: 80mm;
+            }
+
+            .no-print {
+                display: none;
+            }
+        }
+    </style>
+</head>
+
+<body onload="window.print()">
+    <div class="no-print" style="margin-bottom: 20px; text-align: center;">
+        <button onclick="window.print()"
+            style="padding: 10px 20px; background: #2563eb; color: white; border: none; border-radius: 5px; cursor: pointer; font-family: sans-serif;">Print
+            Receipt</button>
+        <a href="{{ url_for('pos.print_label', sale_id=sale.id) }}"
+            style="padding: 10px 20px; background: #000; color: white; border: none; border-radius: 5px; cursor: pointer; font-family: sans-serif; margin-left: 10px; text-decoration: none; display: inline-block;">Shipping
+            Label</a>
+        <button onclick="window.history.back()"
+            style="padding: 10px 20px; background: #64748b; color: white; border: none; border-radius: 5px; cursor: pointer; font-family: sans-serif; margin-left: 10px;">Back
+            to POS</button>
+    </div>
+
+    <div class="text-center mb-6">
+        <h1 class="text-xl font-bold uppercase tracking-widest text-slate-800">{{ system_settings.company_name if
+            system_settings else 'WON SOLUTIONS' }}</h1>
+        <p class="text-[10px] text-slate-500 font-medium uppercase tracking-[0.2em] mb-2">{{ system_settings.tagline if
+            system_settings else 'Smart Digital Futures' }}</p>
+        <div class="text-[10px] text-slate-400 leading-relaxed">
+            {{ system_settings.address if system_settings else '255A, Pathaha Road, Udugampola, Sri Lanka' }}<br>
+            Tel: {{ system_settings.phone if system_settings else '0705505052' }}
+        </div>
+        <div class="mt-4 border-b border-slate-200"></div>
+    </div>
+
+    <div>
+        <div class="item-row">
+            <span>Date: {{ sale.created_at.strftime('%Y-%m-%d %H:%M') }}</span>
+        </div>
+        <div class="item-row">
+            <span>Bill ID: #WS-{{ sale.id }}</span>
+        </div>
+        <div class="item-row">
+            <span>Cashier: {{ sale.sold_by }}</span>
+        </div>
+        {% if sale.customer %}
+        <div class="item-row">
+            <span>Customer: {{ sale.customer.name }}</span>
+        </div>
+        {% endif %}
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="font-bold item-row">
+        <span style="flex: 2;">Item</span>
+        <span style="flex: 1;" class="text-center">Qty</span>
+        <span style="flex: 1;" class="text-right">Price</span>
+    </div>
+
+    {% for item in sale.items %}
+    <div class="item-row">
+        <span style="flex: 2;">{{ item.product.name if item.product else 'Unknown Product' }}</span>
+        <span style="flex: 1;" class="text-center">{{ item.quantity }}</span>
+        <span style="flex: 1;" class="text-right">{{ "%.2f"|format(item.price * item.quantity) }}</span>
+    </div>
+    {% endfor %}
+
+    <div class="divider"></div>
+
+    <div class="totals">
+        <div class="totals-row">
+            <span>TOTAL</span>
+            <span>{{ system_settings.currency if system_settings else 'LKR' }} {{ "%.2f"|format(sale.total_amount)
+                }}</span>
+        </div>
+        <div class="item-row">
+            <span>Payment Method</span>
+            <span>{{ sale.payment_type }}</span>
+        </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="footer text-center">
+        <p>{{ system_settings.receipt_footer if system_settings else 'Visit us again for the best future products.' }}
+        </p>
+        <p style="font-size: 8px; color: #666; margin-top: 5px;">{{ system_settings.country if system_settings }}</p>
+    </div>
+</body>
+
+</html>

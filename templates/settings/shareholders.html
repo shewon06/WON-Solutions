@@ -1,0 +1,77 @@
+{% extends "layout.html" %}
+
+{% block page_title %}Shareholder Management{% endblock %}
+
+{% block content %}
+<div class="space-y-8">
+    <div class="max-w-4xl bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+        <div class="px-6 py-4 border-b border-slate-200 bg-slate-50 flex justify-between items-center">
+            <h3 class="font-bold text-slate-800">Add New Shareholder</h3>
+            <i data-lucide="users" class="w-4 h-4 text-slate-400"></i>
+        </div>
+        <form action="{{ url_for('settings.manage_shareholders') }}" method="POST" class="p-6 space-y-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="col-span-2">
+                    <label class="block text-sm font-semibold text-slate-700 mb-1">Shareholder Name</label>
+                    <input type="text" name="name" required
+                        class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+                        placeholder="Individual or Entity name">
+                </div>
+                <div>
+                    <label class="block text-sm font-semibold text-slate-700 mb-1">Number of Shares</label>
+                    <input type="number" name="shares" required min="1"
+                        class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+                        placeholder="e.g. 1000">
+                </div>
+                <div>
+                    <label class="block text-sm font-semibold text-slate-700 mb-1">Share Class</label>
+                    <select name="share_class"
+                        class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none">
+                        <option value="Ordinary">Ordinary</option>
+                        <option value="Preference">Preference</option>
+                    </select>
+                </div>
+            </div>
+            <div class="flex justify-end">
+                <button type="submit"
+                    class="bg-blue-600 text-white px-8 py-3 rounded-lg font-bold shadow-lg hover:bg-blue-700 transition-all">
+                    Register Shareholder
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <div class="max-w-4xl bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+        <div class="px-6 py-4 border-b border-slate-200 bg-slate-50">
+            <h3 class="font-bold text-slate-800">Current Shareholders</h3>
+        </div>
+        <table class="w-full text-left">
+            <thead class="bg-slate-50 border-b border-slate-200">
+                <tr>
+                    <th class="px-6 py-3 text-xs font-semibold text-slate-500 uppercase">Name</th>
+                    <th class="px-6 py-3 text-xs font-semibold text-slate-500 uppercase">Shares Count</th>
+                    <th class="px-6 py-3 text-xs font-semibold text-slate-500 uppercase">Class</th>
+                    <th class="px-6 py-3 text-xs font-semibold text-slate-500 uppercase text-right">Certificate</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-200 text-sm">
+                {% for sh in shareholders %}
+                <tr>
+                    <td class="px-6 py-4 font-bold text-slate-700">{{ sh.name }}</td>
+                    <td class="px-6 py-4 text-slate-500">{{ sh.shares_count }}</td>
+                    <td class="px-6 py-4 text-slate-500">{{ sh.share_class }}</td>
+                    <td class="px-6 py-4 text-right">
+                        <span class="text-xs text-slate-400 italic">Auto-gen enabled</span>
+                    </td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="4" class="px-6 py-12 text-center text-slate-400 italic">No shareholders registered yet.
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

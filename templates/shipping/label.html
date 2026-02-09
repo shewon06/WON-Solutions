@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Shipping Label #{{ sale.id }}</title>
+    <style>
+        body {
+            font-family: 'Inter', 'Segoe UI', sans-serif;
+            width: 100mm;
+            height: 150mm;
+            margin: 0;
+            padding: 5mm;
+            box-sizing: border-box;
+            border: 2px solid #000;
+        }
+
+        .header {
+            border-bottom: 2px solid #000;
+            padding-bottom: 5mm;
+            margin-bottom: 5mm;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header h1 {
+            margin: 0;
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        .section {
+            margin-bottom: 8mm;
+        }
+
+        .label {
+            font-size: 10px;
+            text-transform: uppercase;
+            font-weight: bold;
+            color: #666;
+            margin-bottom: 1mm;
+        }
+
+        .content {
+            font-size: 16px;
+            line-height: 1.4;
+        }
+
+        .sender-box {
+            background: #f8fafc;
+            padding: 3mm;
+            border: 1px dashed #cbd5e1;
+            margin-bottom: 10mm;
+        }
+
+        .receiver-box {
+            padding: 5mm;
+            border: 1px solid #000;
+            min-height: 40mm;
+        }
+
+        .receiver-name {
+            font-size: 24px;
+            font-weight: 800;
+            margin-bottom: 2mm;
+        }
+
+        .barcode {
+            text-align: center;
+            margin-top: 10mm;
+            font-family: 'Courier New', Courier, monospace;
+        }
+
+        .footer {
+            position: absolute;
+            bottom: 5mm;
+            left: 5mm;
+            right: 5mm;
+            border-top: 1px solid #000;
+            padding-top: 2mm;
+            text-align: center;
+            font-size: 10px;
+        }
+
+        @media print {
+            .no-print {
+                display: none;
+            }
+
+            body {
+                border: 2px solid #000;
+            }
+        }
+    </style>
+</head>
+
+<body onload="window.print()">
+    <div class="no-print" style="margin-bottom: 20px; text-align: center;">
+        <button onclick="window.print()"
+            style="padding: 10px 20px; background: #000; color: white; border: none; cursor: pointer; font-weight: bold;">PRINT
+            LABEL</button>
+        <button onclick="window.history.back()"
+            style="padding: 10px 20px; background: #64748b; color: white; border: none; cursor: pointer; margin-left: 10px;">BACK</button>
+    </div>
+
+    <div class="header">
+        <h1>WON SOLUTIONS</h1>
+        <div style="text-align: right;">
+            <div class="label">DATE</div>
+            <div style="font-weight: bold;">{{ sale.created_at.strftime('%Y-%m-%d') }}</div>
+        </div>
+    </div>
+
+    <div class="section sender-box">
+        <div class="space-y-1">
+            <p class="font-extrabold text-slate-800 text-sm uppercase tracking-wider">
+                {{ system_settings.company_name if system_settings else 'WON SOLUTIONS' }}
+            </p>
+            <p class="text-slate-500 text-[10px] uppercase tracking-widest">
+                {{ system_settings.tagline if system_settings else 'Smart Digital Futures' }}
+            </p>
+            <div class="pt-2 text-[10px] text-slate-400 leading-tight">
+                {{ system_settings.address if system_settings else '255A, Pathaha Road, Udugampola, Sri Lanka' }}<br>
+                Tel: {{ system_settings.phone if system_settings else '0705505052' }}
+            </div>
+        </div>
+    </div>
+
+    <div class="section receiver-box">
+        <div class="label">SHIP TO</div>
+        {% if sale.customer %}
+        <div class="receiver-name">{{ sale.customer.name }}</div>
+        <div class="content">
+            {{ sale.customer.address or 'NO ADDRESS PROVIDED' }}<br>
+            <strong>Tel: {{ sale.customer.phone or 'N/A' }}</strong>
+        </div>
+        {% else %}
+        <div class="receiver-name">WALK-IN CUSTOMER</div>
+        <div class="content" style="color: #666; font-style: italic;">
+            Manual address required
+        </div>
+        {% endif %}
+    </div>
+
+    <div class="barcode">
+        <div style="font-size: 40px; letter-spacing: 5px;">|||| || | ||| ||</div>
+        <div style="font-size: 12px; font-weight: bold;">BILL ID: #WS-{{ sale.id }}</div>
+    </div>
+
+    <div class="footer">
+        "WON Solutions – Building Smart Digital Futures."
+    </div>
+</body>
+
+</html>
