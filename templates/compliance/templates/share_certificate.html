@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <style>
+        body {
+            font-family: 'Helvetica', 'Arial', sans-serif;
+            padding: 40px;
+            border: 15px double #1e293b;
+        }
+
+        .header {
+            text-align: center;
+            border-bottom: 2px solid #1e293b;
+            padding-bottom: 20px;
+        }
+
+        .company-name {
+            font-size: 28px;
+            font-weight: bold;
+            text-transform: uppercase;
+            color: #1e293b;
+        }
+
+        .cert-title {
+            font-size: 32px;
+            font-weight: 900;
+            margin-top: 30px;
+            letter-spacing: 2px;
+        }
+
+        .content {
+            margin-top: 40px;
+            line-height: 1.6;
+            text-align: center;
+            font-size: 18px;
+        }
+
+        .shareholder-name {
+            font-size: 24px;
+            font-weight: bold;
+            text-decoration: underline;
+        }
+
+        .footer {
+            margin-top: 60px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .signature-line {
+            border-top: 1px solid #1e293b;
+            width: 200px;
+            margin-top: 50px;
+            text-align: center;
+            font-size: 12px;
+        }
+
+        .watermark {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(-45deg);
+            font-size: 100px;
+            color: rgba(0, 0, 0, 0.05);
+            z-index: -1;
+            white-space: nowrap;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="watermark">WON SOLUTIONS</div>
+
+    <div class="header">
+        <div class="company-name">{{ company.company_name }}</div>
+        <div>ROC: {{ company.roc_number }}</div>
+    </div>
+
+    <div class="cert-title" style="text-align: center;">SHARE CERTIFICATE</div>
+
+    <div class="content">
+        <p>This is to certify that</p>
+        <p class="shareholder-name">{{ shareholder.name }}</p>
+        <p>is the registered holder of</p>
+        <p><strong style="font-size: 24px;">{{ shareholder.shares_count }}</strong></p>
+        <p>{{ shareholder.share_class }} Shares</p>
+        <p>in the above-named Company, subject to the Articles of Association of the Company.</p>
+    </div>
+
+    <div style="margin-top: 50px; text-align: center;">
+        <p>Given under the Common Seal of the Company on this day</p>
+        <p><strong>{{ today.strftime('%d %B %Y') }}</strong></p>
+    </div>
+
+    <table style="width: 100%; margin-top: 40px;">
+        <tr>
+            <td style="text-align: center;">
+                <div style="border-top: 1px solid #000; width: 150px; margin: 0 auto;"></div>
+                <div style="font-size: 12px; margin-top: 5px;">Director</div>
+            </td>
+            <td style="text-align: center;">
+                <div style="border-top: 1px solid #000; width: 150px; margin: 0 auto;"></div>
+                <div style="font-size: 12px; margin-top: 5px;">Secretary / Director</div>
+            </td>
+        </tr>
+    </table>
+</body>
+
+</html>

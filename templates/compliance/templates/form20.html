@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <style>
+        @page {
+            size: A4;
+            margin: 2cm;
+        }
+
+        body {
+            font-family: sans-serif;
+            font-size: 11pt;
+        }
+
+        .header {
+            text-align: center;
+            background: #f0f0f0;
+            padding: 20px;
+            border: 1px solid #000;
+            margin-bottom: 20px;
+        }
+
+        .box {
+            border: 1px solid #000;
+            padding: 10px;
+            margin-bottom: 10px;
+        }
+
+        .grid {
+            display: flex;
+            flex-wrap: wrap;
+        }
+
+        .col {
+            flex: 1;
+            border: 1px solid #eee;
+            padding: 5px;
+        }
+
+        .title {
+            font-size: 16pt;
+            font-weight: bold;
+        }
+
+        .nil-stamp {
+            color: red;
+            border: 5px solid red;
+            font-size: 40pt;
+            font-weight: bold;
+            padding: 10px;
+            position: absolute;
+            transform: rotate(-20deg);
+            opacity: 0.3;
+            top: 100px;
+            left: 100px;
+        }
+    </style>
+</head>
+
+<body>
+    {% if is_nil %}
+    <div class="nil-stamp">NIL RETURN</div>
+    {% endif %}
+
+    <div class="header">
+        <div class="title">INLAND REVENUE DEPARTMENT - SRI LANKA</div>
+        <div style="font-weight: bold; margin-top: 10px;">FORM 20: RETURN OF INCOME</div>
+        <div>TAX YEAR: {{ year }} / {{ year + 1 }}</div>
+    </div>
+
+    <div class="box">
+        <strong>1. COMPANY DETAILS</strong><br>
+        Name: {{ company.company_name }}<br>
+        TIN: {{ company.tin_number }}<br>
+        Address: {{ company.registered_address }}
+    </div>
+
+    <div class="box">
+        <strong>2. SUMMARY OF PROFITS</strong><br>
+        <p>Total Sales/Income: LKR {{ "%.2f"|format(sales_total) }}</p>
+        <p>Taxable Profit (Estimated): LKR {{ "%.2f"|format(sales_total * 0.1) }} (Placeholder Calc)</p>
+    </div>
+
+    <div class="box">
+        <strong>3. DECLARATION</strong><br>
+        <p>I hereby declare that the particulars given in this return and the schedules attached are true and correct.
+        </p>
+        <br><br>
+        <div style="border-top: 1px solid black; width: 300px;">Authorized Signature / Seal</div>
+    </div>
+
+    <div style="margin-top: 50px; font-size: 8pt; text-align: center;">
+        <p>{{ system_gen_msg }}</p>
+        <p>This document is a system-prepared draft. Please verify with a qualified tax consultant or auditor before
+            filing.</p>
+    </div>
+</body>
+
+</html>

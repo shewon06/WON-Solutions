@@ -1,0 +1,135 @@
+{% extends "layout.html" %}
+
+{% block page_title %}Overview{% endblock %}
+
+{% block content %}
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+    <!-- Stat Card -->
+    <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
+        <div class="flex items-center justify-between">
+            <p class="text-sm font-medium text-slate-500">Today's Sales</p>
+            <div class="p-2 bg-green-50 text-green-600 rounded-lg">
+                <i data-lucide="trending-up" class="w-4 h-4"></i>
+            </div>
+        </div>
+        <p class="text-2xl font-bold mt-2 text-slate-900">LKR {{ "%.2f"|format(sales_today) }}</p>
+        <p class="text-xs text-slate-400 mt-1">Total revenue today</p>
+    </div>
+
+    <!-- Stat Card -->
+    <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
+        <div class="flex items-center justify-between">
+            <p class="text-sm font-medium text-slate-500">Today's Expenses</p>
+            <div class="p-2 bg-red-50 text-red-600 rounded-lg">
+                <i data-lucide="minus-circle" class="w-4 h-4"></i>
+            </div>
+        </div>
+        <p class="text-2xl font-bold mt-2 text-slate-900">LKR {{ "%.2f"|format(expenses_today) }}</p>
+        <p class="text-xs text-slate-400 mt-1">Business costs today</p>
+    </div>
+
+    <!-- Stat Card -->
+    <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
+        <div class="flex items-center justify-between">
+            <p class="text-sm font-medium text-slate-500">Daily Net</p>
+            <div class="p-2 bg-blue-50 text-blue-600 rounded-lg">
+                <i data-lucide="dollar-sign" class="w-4 h-4"></i>
+            </div>
+        </div>
+        <p class="text-2xl font-bold mt-2 text-slate-900">LKR {{ "%.2f"|format(sales_today - expenses_today) }}</p>
+        <p
+            class="text-xs text-slate-400 mt-1 font-medium {% if (sales_today - expenses_today) >= 0 %}text-green-500{% else %}text-red-500{% endif %}">
+            {{ "Profit" if (sales_today - expenses_today) >= 0 else "Loss" }}
+        </p>
+    </div>
+
+    <!-- Stat Card -->
+    <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
+        <div class="flex items-center justify-between">
+            <p class="text-sm font-medium text-slate-500">Low Stock Items</p>
+            <div class="p-2 bg-orange-50 text-orange-600 rounded-lg">
+                <i data-lucide="alert-triangle" class="w-4 h-4"></i>
+            </div>
+        </div>
+        <p class="text-2xl font-bold mt-2 text-slate-900">{{ low_stock_count }}</p>
+        <p class="text-xs text-slate-400 mt-1 text-orange-500">Items below threshold</p>
+    </div>
+</div>
+
+<div class="mt-8 grid grid-cols-1 lg:grid-cols-3 gap-6">
+    <!-- Recent Sales Table -->
+    <div class="lg:col-span-2 bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+        <div class="px-6 py-4 border-b border-slate-200 flex justify-between items-center">
+            <h3 class="font-semibold text-slate-800">Recent Sales</h3>
+            <button class="text-sm text-blue-600 font-medium hover:underline">View All</button>
+        </div>
+        <table class="w-full text-left">
+            <thead class="bg-slate-50 border-b border-slate-200">
+                <tr>
+                    <th class="px-6 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wider">Bill ID</th>
+                    <th class="px-6 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wider">Customer</th>
+                    <th class="px-6 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wider">Amount</th>
+                    <th class="px-6 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wider">Status</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-200">
+                {% for sale in recent_sales %}
+                <tr>
+                    <td class="px-6 py-4 text-sm font-medium text-slate-900 underline hover:text-blue-600">
+                        <a href="{{ url_for('pos.view_receipt', sale_id=sale.id) }}" target="_blank">#WS-{{ sale.id
+                            }}</a>
+                    </td>
+                    <td class="px-6 py-4 text-sm text-slate-500">{{ sale.created_at.strftime('%H:%M') }} by {{
+                        sale.sold_by }}</td>
+                    <td class="px-6 py-4 text-sm text-slate-900 font-semibold">LKR {{ "%.2f"|format(sale.total_amount)
+                        }}</td>
+                    <td class="px-6 py-4 text-sm">
+                        <span class="px-2 py-1 bg-green-100 text-green-700 rounded-full text-xs font-medium">{{
+                            sale.payment_type }}</span>
+                    </td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="4" class="px-6 py-12 text-center text-slate-400 italic">No sales recorded yet today.
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Category Distribution -->
+    <div class="bg-white rounded-xl border border-slate-200 shadow-sm p-6">
+        <h3 class="font-semibold text-slate-800 mb-4">Stock Overview</h3>
+        <div class="space-y-4">
+            <div>
+                <div class="flex justify-between text-sm mb-1">
+                    <span class="text-slate-500">Electronics</span>
+                    <span class="text-slate-900 font-medium">65%</span>
+                </div>
+                <div class="w-full bg-slate-100 rounded-full h-2">
+                    <div class="bg-blue-600 h-2 rounded-full" style="width: 65%"></div>
+                </div>
+            </div>
+            <div>
+                <div class="flex justify-between text-sm mb-1">
+                    <span class="text-slate-500">Stationery</span>
+                    <span class="text-slate-900 font-medium">25%</span>
+                </div>
+                <div class="w-full bg-slate-100 rounded-full h-2">
+                    <div class="bg-orange-600 h-2 rounded-full" style="width: 25%"></div>
+                </div>
+            </div>
+            <div>
+                <div class="flex justify-between text-sm mb-1">
+                    <span class="text-slate-500">Services</span>
+                    <span class="text-slate-900 font-medium">10%</span>
+                </div>
+                <div class="w-full bg-slate-100 rounded-full h-2">
+                    <div class="bg-green-600 h-2 rounded-full" style="width: 10%"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

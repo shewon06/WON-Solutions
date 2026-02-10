@@ -1,0 +1,166 @@
+{% extends "layout.html" %}
+
+{% block page_title %}Customer Management{% endblock %}
+
+{% block content %}
+<div class="space-y-6">
+    <div class="flex justify-between items-center">
+        <h3 class="text-xl font-bold text-slate-800">Your Regular Customers</h3>
+        <div class="flex gap-3">
+            <button onclick="document.getElementById('import-csv-modal').classList.remove('hidden')"
+                class="bg-slate-100 text-slate-700 px-4 py-2 rounded-lg font-medium hover:bg-slate-200 flex items-center shadow-sm transition-all border border-slate-200">
+                <i data-lucide="upload" class="w-4 h-4 mr-2"></i>
+                Bulk Import
+            </button>
+            <button onclick="document.getElementById('sync-website-modal').classList.remove('hidden')"
+                class="bg-blue-50 text-blue-700 px-4 py-2 rounded-lg font-medium hover:bg-blue-100 flex items-center shadow-sm transition-all border border-blue-100">
+                <i data-lucide="refresh-cw" class="w-4 h-4 mr-2"></i>
+                Website Sync
+            </button>
+            <button onclick="document.getElementById('add-customer-modal').classList.remove('hidden')"
+                class="bg-blue-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-blue-700 flex items-center shadow-sm transition-all">
+                <i data-lucide="plus" class="w-4 h-4 mr-2"></i>
+                Add New Customer
+            </button>
+        </div>
+    </div>
+
+    <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+        <table class="w-full text-left">
+            <thead class="bg-slate-50 border-b border-slate-200">
+                <tr>
+                    <th class="px-6 py-4 text-xs font-semibold text-slate-500 uppercase">Customer Name</th>
+                    <th class="px-6 py-4 text-xs font-semibold text-slate-500 uppercase">Phone & Address</th>
+                    <th class="px-6 py-4 text-xs font-semibold text-slate-500 uppercase">Total Purchases</th>
+                    <th class="px-6 py-4 text-xs font-semibold text-slate-500 uppercase">Credit Balance</th>
+                    <th class="px-6 py-4 text-xs font-semibold text-slate-500 uppercase text-right">Actions</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-200 text-sm">
+                {% for customer in customers %}
+                <tr class="hover:bg-slate-50">
+                    <td class="px-6 py-4 font-medium text-slate-900">{{ customer.name }}</td>
+                    <td class="px-6 py-4 text-slate-500">
+                        <div>{{ customer.phone or 'N/A' }}</div>
+                        <div class="text-[10px] text-slate-400 max-w-[200px] truncate" title="{{ customer.address }}">{{
+                            customer.address or 'No address' }}</div>
+                    </td>
+                    <td class="px-6 py-4 text-slate-500">{{ customer.sales|length }} Bills</td>
+                    <td
+                        class="px-6 py-4 font-bold {% if customer.credit_balance > 0 %}text-red-500{% else %}text-green-600{% endif %}">
+                        LKR {{ "%.2f"|format(customer.credit_balance or 0) }}
+                    </td>
+                    <td class="px-6 py-4 text-right">
+                        <button class="text-slate-400 hover:text-blue-600"><i data-lucide="history"
+                                class="w-4 h-4"></i></button>
+                    </td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="5" class="px-6 py-12 text-center text-slate-400 italic">No customers found. List your
+                        regulars here.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Import CSV Modal -->
+<div id="import-csv-modal"
+    class="hidden fixed inset-0 bg-slate-900/50 backdrop-blur-sm flex items-center justify-center p-4 z-50">
+    <div class="bg-white rounded-2xl shadow-xl w-full max-w-md overflow-hidden">
+        <div class="px-6 py-4 border-b border-slate-200 flex justify-between items-center bg-slate-50">
+            <h3 class="font-bold text-slate-800">Bulk Import Customers</h3>
+            <button onclick="document.getElementById('import-csv-modal').classList.add('hidden')"
+                class="text-slate-400 hover:text-slate-600">
+                <i data-lucide="x" class="w-5 h-5"></i>
+            </button>
+        </div>
+        <form action="{{ url_for('crm.upload_customers') }}" method="POST" enctype="multipart/form-data"
+            class="p-6 space-y-4">
+            <p class="text-xs text-slate-500 mb-2">Upload a CSV file with columns: <strong>name, phone, address</strong>
+            </p>
+            <div>
+                <input type="file" name="file" accept=".csv" required
+                    class="w-full px-4 py-8 border-2 border-dashed border-slate-200 rounded-xl hover:border-blue-500 cursor-pointer">
+            </div>
+            <div class="pt-4 flex justify-end gap-3">
+                <button type="button" onclick="document.getElementById('import-csv-modal').classList.add('hidden')"
+                    class="px-4 py-2 text-slate-600 font-medium hover:bg-slate-100 rounded-lg">Cancel</button>
+                <button type="submit"
+                    class="px-6 py-2 bg-slate-900 text-white font-bold rounded-lg hover:bg-slate-800 shadow-md">Upload
+                    CSV</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Website Sync Modal -->
+<div id="sync-website-modal"
+    class="hidden fixed inset-0 bg-slate-900/50 backdrop-blur-sm flex items-center justify-center p-4 z-50">
+    <div class="bg-white rounded-2xl shadow-xl w-full max-w-md overflow-hidden">
+        <div class="px-6 py-4 border-b border-slate-200 flex justify-between items-center bg-slate-50">
+            <h3 class="font-bold text-slate-800">Website Data Sync</h3>
+            <button onclick="document.getElementById('sync-website-modal').classList.add('hidden')"
+                class="text-slate-400 hover:text-slate-600">
+                <i data-lucide="x" class="w-5 h-5"></i>
+            </button>
+        </div>
+        <form action="{{ url_for('crm.sync_from_website') }}" method="POST" class="p-6 space-y-4">
+            <p class="text-xs text-slate-500 mb-2">Enter the JSON API endpoint of your website to fetch latest customer
+                data.</p>
+            <div>
+                <label class="block text-sm font-semibold text-slate-700 mb-1">JSON API URL</label>
+                <input type="url" name="api_url" placeholder="https://yourwebsite.com/api/customers" required
+                    class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none">
+            </div>
+            <div class="pt-4 flex justify-end gap-3">
+                <button type="button" onclick="document.getElementById('sync-website-modal').classList.add('hidden')"
+                    class="px-4 py-2 text-slate-600 font-medium hover:bg-slate-100 rounded-lg">Cancel</button>
+                <button type="submit"
+                    class="px-6 py-2 bg-blue-600 text-white font-bold rounded-lg hover:bg-blue-700 shadow-md">Start
+                    Sync</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Add Customer Modal -->
+<div id="add-customer-modal"
+    class="hidden fixed inset-0 bg-slate-900/50 backdrop-blur-sm flex items-center justify-center p-4 z-50">
+    <div class="bg-white rounded-2xl shadow-xl w-full max-w-md overflow-hidden">
+        <div class="px-6 py-4 border-b border-slate-200 flex justify-between items-center bg-slate-50">
+            <h3 class="font-bold text-slate-800">New Customer Profile</h3>
+            <button onclick="document.getElementById('add-customer-modal').classList.add('hidden')"
+                class="text-slate-400 hover:text-slate-600">
+                <i data-lucide="x" class="w-5 h-5"></i>
+            </button>
+        </div>
+        <form action="{{ url_for('crm.manage_customers') }}" method="POST" class="p-6 space-y-4">
+            <div>
+                <label class="block text-sm font-semibold text-slate-700 mb-1">Full Name *</label>
+                <input type="text" name="name" required
+                    class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none">
+            </div>
+            <div>
+                <label class="block text-sm font-semibold text-slate-700 mb-1">Phone Number</label>
+                <input type="text" name="phone" placeholder="07x xxxxxxx"
+                    class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none">
+            </div>
+            <div>
+                <label class="block text-sm font-semibold text-slate-700 mb-1">Shipping Address</label>
+                <textarea name="address" placeholder="Full shipping address for online orders..." rows="2"
+                    class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"></textarea>
+            </div>
+            <div class="pt-4 flex justify-end gap-3">
+                <button type="button" onclick="document.getElementById('add-customer-modal').classList.add('hidden')"
+                    class="px-4 py-2 text-slate-600 font-medium hover:bg-slate-100 rounded-lg">Cancel</button>
+                <button type="submit"
+                    class="px-6 py-2 bg-blue-600 text-white font-bold rounded-lg hover:bg-blue-700 shadow-md">Create
+                    Customer</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
