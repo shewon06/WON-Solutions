@@ -16,9 +16,13 @@ export default function DashboardLayout({
                 </div>
 
                 <nav className="space-y-2">
-                    <Link href="/dashboard" className="flex items-center gap-3 rounded-lg bg-blue-600/10 px-4 py-2 text-blue-400 border border-blue-600/20">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect width="7" height="9" x="3" y="3" rx="1" /><rect width="7" height="5" x="14" y="3" rx="1" /><rect width="7" height="9" x="14" y="12" rx="1" /><rect width="7" height="5" x="3" y="16" rx="1" /></svg>
+                    <Link href="/dashboard" className="flex items-center gap-3 rounded-lg px-4 py-2 transition-colors hover:bg-white/5 text-white/70 hover:text-white">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect width="7" height="9" x="3" y="3" rx="1" /><rect width="7" height="5" x="14" y="3" rx="1" /><rect width="7" height="5" x="3" y="16" rx="1" /><rect width="7" height="9" x="14" y="12" rx="1" /></svg>
                         Dashboard
+                    </Link>
+                    <Link href="/dashboard/pos" className="flex items-center gap-3 rounded-lg bg-blue-600/10 px-4 py-2 text-blue-400 border border-blue-600/20">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10" /><path d="M12 8v8" /><path d="M8 12h8" /></svg>
+                        POS System
                     </Link>
                     <div className="pt-4 text-xs font-semibold text-white/40 uppercase tracking-wider px-4">Management</div>
                     <Link href="/dashboard/products" className="flex items-center gap-3 rounded-lg px-4 py-2 transition-colors hover:bg-white/5 text-white/70 hover:text-white">
