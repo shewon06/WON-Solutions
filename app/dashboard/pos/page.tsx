@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { getPOSData, processSale } from "../actions";
+import { getPOSData, processSale } from "../../actions";
 
 export default function POSPage() {
     const [products, setProducts] = useState<any[]>([]);
