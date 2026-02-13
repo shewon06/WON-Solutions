@@ -1,0 +1,1 @@
+mongodb://Vercel-Admin-atlas-amber-gardenc:XGrObDyQBHhk9TN5@89.192.236.4:27017,89.192.236.19:27017,89.192.236.31:27017/?replicaSet=atlas-amber-gardenc-shard-0&ssl=true&authSource=admin&retryWrites=true&w=majority

@@ -1,0 +1,15 @@
+legacy/
+backups/
+venv/
+node_modules/
+.next/
+*.db
+*.log
+diag_build.py
+build_log.txt
+final_build_log.txt
+make_conn_str.py
+resolve_ips.py
+test_mongo_conn.py
+check_3001.py
+check_next_props_v2.py
